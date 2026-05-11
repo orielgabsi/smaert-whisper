@@ -191,21 +191,21 @@ async def analyze_chat_event(sender_username: str, message_content: str, room_na
     # === שלב 2: שימוש ב-AI ליצירת תובנות והצעות ===
     
     system_prompt = (
-        "You are an invisible observer analyzing a chat between students. DO NOT assume messages are directed at you.\n"
+        f"You are an invisible observer analyzing a chat. The user '{sender_username}' just sent a new message.\n"
+        f"Your job is to advise the OTHER people in the chat on how to reply to '{sender_username}'. DO NOT talk about yourself.\n"
         f"Bullying status: {is_bullying}.\n"
         f"Context: {ai_context_instruction}\n\n"
         "Your task is to return a JSON containing: \n"
-        "1. 'suggestions': An array of 3 objects, each with 'insight' and 'response_text', intended to help the RECIPIENT of the message.\n"
-        "   - 'insight': A short, 1-sentence empathetic thought validating how the recipient might feel about the sender's specific message (e.g., 'It hurts when someone says that.'). Do NOT speak about yourself.\n"
-        "   - 'response_text': A practical, natural, and authentic way the recipient could reply to the sender.\n"
+        "1. 'suggestions': An array of 3 objects, each with 'insight' and 'response_text'.\n"
+        f"   - 'insight': A short, 1-sentence thought validating what '{sender_username}' meant or how to react to them.\n"
+        f"   - 'response_text': A practical, natural way another user could reply to '{sender_username}'.\n"
         "2. 'is_bullying': (Boolean) true if you detect harmful, offensive, violent, or exclusionary behavior.\n"
         "3. 'parent_alert_text': (Optional) If is_bullying is true, write a highly specific, practical 1-2 sentence alert for a parent. Tell them exactly what happened in the chat (mentioning the exact words if relevant) and exactly what practical step they should take with their child. Make it personal, not generic.\n\n"
         "Guidelines:\n"
         "- CRITICAL: If you detect VIOLENCE, AGGRESSION, or BULLYING, set 'is_bullying' to true.\n"
         "- BE NATURAL AND AUTHENTIC. Tailor advice to the exact words used.\n"
         "- All fields MUST be in English. Return ONLY valid JSON."
-    )
-    
+    )    
     user_prompt = f"Chat History:\n{history}\n\nLast message from {sender_username}: {message_content}"
 
     try:
