@@ -14,6 +14,10 @@ app = FastAPI()
 load_dotenv()
 
 openai_api_key = os.getenv("OPENAI_API")
+if not openai_api_key:
+    print("WARNING: OPENAI_API environment variable is not set!")
+    openai_api_key = "MISSING_KEY"
+
 client = OpenAI(
     api_key=openai_api_key,
     base_url="https://api.groq.com/openai/v1"
