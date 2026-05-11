@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Text Recorder</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Speech to Text</h1>
+        
+        <div class="mic-container">
+            <button id="micButton" class="mic-button">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <div class="recording-indicator" id="recordingIndicator">
+                <div class="recording-wave"></div>
+                <div class="recording-wave"></div>
+                <div class="recording-wave"></div>
+                <div class="recording-wave"></div>
+            </div>
+            <div id="recordingStatus">Click to start recording</div>
+        </div>
+        
+        <div class="result-container">
+            <h2>Transcription Result:</h2>
+            <div id="result" class="result">Your speech will appear here...</div>
+        </div>
+
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
