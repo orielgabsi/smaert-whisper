@@ -6,10 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 
 from S3.app import app as chat_app
-from S3.learn import app as learn_app
-from S3.recess import app as recess_app
-
-app = FastAPI(title="Unified School App")
+from S3.app import app as chat_app
 
 # Configure CORS
 app.add_middleware(
@@ -20,10 +17,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount the sub-applications
+# Mount the chat application
 app.mount("/chat", chat_app)
-app.mount("/learn", learn_app)
-app.mount("/recess", recess_app)
 
 @app.get("/")
 async def root():
@@ -82,11 +77,9 @@ async def root():
     <body>
         <div class="container">
             <h1>Welcome to the Unified School App 🎓</h1>
-            <p>Please select the environment you want to enter:</p>
+            <p>Welcome to the secure school communication platform.</p>
             <div class="links">
-                <a href="/chat/" class="btn-chat">💬 Main Chat</a>
-                <a href="/learn/" class="btn-learn">📚 Learn Mode</a>
-                <a href="/recess/" class="btn-recess">🎮 Recess Mode</a>
+                <a href="/chat/" class="btn-chat">💬 Enter Main Chat</a>
             </div>
         </div>
     </body>
