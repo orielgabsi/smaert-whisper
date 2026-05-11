@@ -191,18 +191,18 @@ async def analyze_chat_event(sender_username: str, message_content: str, room_na
     # === שלב 2: שימוש ב-AI ליצירת תובנות והצעות ===
     
     system_prompt = (
-        "You are an empathetic, emotionally intelligent peer. The algorithm has already analyzed the message.\n"
+        "You are an invisible observer analyzing a chat between students. DO NOT assume messages are directed at you.\n"
         f"Bullying status: {is_bullying}.\n"
         f"Context: {ai_context_instruction}\n\n"
         "Your task is to return a JSON containing: \n"
-        "1. 'suggestions': An array of 3 objects, each with 'insight' and 'response_text'.\n"
-        "   - 'insight': A short, natural, empathetic thought about the specific message. Speak like a supportive friend (e.g., 'That sounded a bit harsh.'). Avoid robotic phrases.\n"
-        "   - 'response_text': A practical, natural, and authentic way the user could reply based on the exact context.\n"
+        "1. 'suggestions': An array of 3 objects, each with 'insight' and 'response_text', intended to help the RECIPIENT of the message.\n"
+        "   - 'insight': A short, 1-sentence empathetic thought validating how the recipient might feel about the sender's specific message (e.g., 'It hurts when someone says that.'). Do NOT speak about yourself.\n"
+        "   - 'response_text': A practical, natural, and authentic way the recipient could reply to the sender.\n"
         "2. 'is_bullying': (Boolean) true if you detect harmful, offensive, violent, or exclusionary behavior.\n"
-        "3. 'parent_advice': (Optional) If is_bullying is true, write a specific, actionable, and empathetic piece of advice for a parent on how to discuss THIS exact message with their child.\n\n"
+        "3. 'parent_alert_text': (Optional) If is_bullying is true, write a highly specific, practical 1-2 sentence alert for a parent. Tell them exactly what happened in the chat (mentioning the exact words if relevant) and exactly what practical step they should take with their child. Make it personal, not generic.\n\n"
         "Guidelines:\n"
         "- CRITICAL: If you detect VIOLENCE, AGGRESSION, or BULLYING, set 'is_bullying' to true.\n"
-        "- BE NATURAL AND AUTHENTIC. Tailor the advice to the exact words used in the chat.\n"
+        "- BE NATURAL AND AUTHENTIC. Tailor advice to the exact words used.\n"
         "- All fields MUST be in English. Return ONLY valid JSON."
     )
     
@@ -222,8 +222,7 @@ async def analyze_chat_event(sender_username: str, message_content: str, room_na
         # התראה להורים (אלגוריתם או AI)
         ai_detected_bullying = result.get("is_bullying", False)
         if is_bullying or ai_detected_bullying:
-            explanation = "Harmful behavior detected."
-            parent_advice = result.get("parent_advice", "Please talk to your child about this incident.")
+            parent_alert_text = result.get("parent_alert_text", f"{sender_username} sent a potentially harmful message. Please check in with your child.")
             
             print(f"BULLYING DETECTED! Sender: {sender_username}, AI Detected: {ai_detected_bullying}")
             
@@ -236,7 +235,7 @@ async def analyze_chat_event(sender_username: str, message_content: str, room_na
                         child_name = user_relationships.get(username_in_room, 'your child')
                         alert_msg = {
                             "type": "parent_alert",
-                            "content": f"Safety Alert for group '{room_name}': {sender_username} sent a harmful message.\n\nRecommendation: We highly recommend checking in with {child_name} about this incident.\n\nAdvice: {parent_advice}"
+                            "content": f"Safety Alert ({room_name}): {parent_alert_text}\n\nRecommended: Talk to {child_name} about this."
                         }
                         await ws_in_room.send_text(json.dumps(alert_msg))
 
