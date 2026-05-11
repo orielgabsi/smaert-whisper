@@ -6,7 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 
 from S3.app import app as chat_app
-from S3.app import app as chat_app
+
+app = FastAPI(title="Unified School App")
 
 # Configure CORS
 app.add_middleware(
